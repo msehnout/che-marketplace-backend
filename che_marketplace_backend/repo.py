@@ -3,7 +3,7 @@ import os
 import yaml
 
 from github import Github
-from plugin import Plugin
+from che_marketplace_backend.plugin import Plugin
 
 METADATA_FILENAME = 'meta.yaml'
 # Name of the repository on Github
