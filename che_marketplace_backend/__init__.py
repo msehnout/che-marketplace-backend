@@ -20,7 +20,7 @@ def create_app(test_config=None):
         plugins = cache.get('plugins')
         if plugins is None:
             plugins = repo.fetch_plugins_from_github()
-            cache.set('plugins', plugins, timeout=600)
+            cache.set('plugins', plugins, timeout=1800)
         return plugins
 
 
