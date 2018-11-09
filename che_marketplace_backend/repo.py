@@ -31,13 +31,13 @@ class Repository():
     def _fetch_metadata(self, plugin_path):
         metadata_file = self.repo.get_contents(plugin_path.path + '/' + METADATA_FILENAME)
         text = base64.b64decode(metadata_file.content).decode('utf-8')
-        dict = yaml.load(text)
-        return Plugin.from_dict(dict)
+        dict = yaml.safe_load(text)
+        return Plugin.from_dict(dict) if dict is not None else None
 
     def fetch_plugins_from_github(self):
         plugins_dirs = self._fetch_plugin_dirs()
         latest_versions = map(lambda x: self._fetch_latest_version(x), plugins_dirs)
-        return list(map(lambda x: self._fetch_metadata(x), latest_versions))
+        return list(filter(lambda x: x is not None, map(lambda x: self._fetch_metadata(x), latest_versions)))
 
 
 if __name__ == '__main__':
