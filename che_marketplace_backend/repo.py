@@ -37,7 +37,8 @@ class Repository():
     def fetch_plugins_from_github(self):
         plugins_dirs = self._fetch_plugin_dirs()
         latest_versions = map(lambda x: self._fetch_latest_version(x), plugins_dirs)
-        return list(filter(lambda x: x is not None, map(lambda x: self._fetch_metadata(x), latest_versions)))
+        return list(filter(lambda x: x is not None,
+                           map(lambda x: self._fetch_metadata(x), latest_versions)))
 
 
 if __name__ == '__main__':
