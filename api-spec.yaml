@@ -1,0 +1,70 @@
+swagger: "2.0"
+info:
+  description: "This is a backend for Che plugin marketplace"
+  version: "0.1.0"
+  title: "Che Plugin Marketplace"
+  license:
+    name: "MIT"
+host: "tbd.example.com"
+basePath: "/v1"
+tags:
+- name: "plugins"
+  description: "Fetch data about available plugins"
+schemes:
+- "http"
+paths:
+  /plugins:
+    get:
+      tags:
+      - "plugins"
+      summary: "List all plugins"
+      description: ""
+      operationId: "listPlugins"
+      produces:
+      - "application/json"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/Plugin"
+  /plugins/{pluginId}:
+    get:
+      tags:
+      - "plugins"
+      summary: "Find plugins by its ID"
+      description: "Returns a single plugin"
+      operationId: "getPluginByName"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "pluginId"
+        in: "path"
+        description: "ID of the plugin to return"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/Plugin"
+        404:
+          description: "Plugin not found"
+definitions:
+  Plugin:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+      version:
+        type: "string"
+      name:
+        type: "string"
+      title:
+        type: "string"
+      description:
+        type: "string"
+      icon:
+        type: "string"
+      url:
+        type: "string"
+
