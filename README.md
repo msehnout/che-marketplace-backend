@@ -5,3 +5,5 @@ for development:
  * create python virtual environment and activate it
  * install dependencies
  * run `make run-local`
+
+or simply run: `make run-docker`
