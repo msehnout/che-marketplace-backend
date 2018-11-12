@@ -30,7 +30,16 @@ class Repository():
 
     def _fetch_metadata(self, plugin_path):
         metadata_file = self.repo.get_contents(plugin_path.path + '/' + METADATA_FILENAME)
-        text = base64.b64decode(metadata_file.content).decode('utf-8')
+        try:
+            text = base64.b64decode(metadata_file.content).decode('utf-8')
+        except base64.binascii.Error:
+            # The input string contains letters that does not belong to the b64 alphabet
+            # TODO: log
+            return None
+        except UnicodeError:
+            # Error while decoding the byte stream, not valid UTF-8
+            # TODO: log
+            return None
         dict = yaml.safe_load(text)
         return Plugin.from_dict(dict) if dict is not None else None
 
