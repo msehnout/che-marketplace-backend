@@ -1,5 +1,7 @@
 # Che plugin marketplace backend
 
+[![Build Status](https://travis-ci.org/msehnout/che-marketplace-backend.svg?branch=master)](https://travis-ci.org/msehnout/che-marketplace-backend)
+
 for development:
  * fill `CHE_PLUGIN_DEV_TOKEN` environment variable with your personal Github API access token
  * create python virtual environment and activate it
