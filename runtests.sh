@@ -1,0 +1,2 @@
+cd tests
+"$(which pytest)" .
