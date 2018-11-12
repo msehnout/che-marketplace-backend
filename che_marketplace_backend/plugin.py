@@ -1,40 +1,27 @@
 # Data classes FTW, use latest-greatest!
+from typing import Dict, Type, TypeVar
+
+T = TypeVar('T', bound='Plugin')
 
 
 class Plugin():
     def __init__(self):
-        self.id = None
-        self.version = None
-        self.type = None
-        self.name = None
-        self.title = None
-        self.description = None
-        self.icon = None
-        self.url = None
+        self.id: str = None             # Well defined string? e.g. [[:alpha:]]+[-_[:alpha:]]+
+        self.version: str = None        # We need sth with defined ordering: e.g. semver!
+        self.type: str = None
+        self.name: str = None
+        self.title: str = None
+        self.description: str = None
+        self.icon: str = None
+        self.url: str = None
 
     @staticmethod
-    def from_dict(dict):
+    def from_dict(dict: Dict[str, str]) -> T:
         new_plugin = Plugin()
         for attribute, value in dict.items():
             setattr(new_plugin, attribute, value)
 
         return new_plugin
 
-    def as_dict(self):
+    def as_dict(self) -> Dict[str, str]:
         return self.__dict__
-
-
-text = """id: che-dummy-plugin
-version: 0.0.1
-type: Che Plugin
-name: Che Samples Hello World Plugin
-title: Che Samples Hello World Plugin
-description: A hello world theia plug-in wrapped into a Che Plug-in
-icon: https://www.eclipse.org/che/images/ico/16x16.png
-url: https://github.com/ws-skeleton/che-dummy-plugin/releases/download/untagged-8f3e198285a2f3b6b2db/che-dummy-plugin.tar.gz
-"""
-
-if __name__ == "__main__":
-    import yaml
-    plugin = Plugin.from_dict(yaml.load(text))
-    print(plugin)
