@@ -2,7 +2,8 @@ import base64
 import os
 import yaml
 
-from github import Github
+from flask import current_app
+from github import Github, GithubException
 from che_marketplace_backend.plugin import Plugin
 
 METADATA_FILENAME = 'meta.yaml'
@@ -11,8 +12,10 @@ PLUGIN_REGISTRY = 'eclipse/che-plugin-registry'
 
 
 class Repository():
+
     def __init__(self):
         self.plugins = []
+        # This seems to be lazy, so it will pass regardless the content of the token
         self.g = Github(os.environ['CHE_PLUGIN_DEV_TOKEN'])
         self.repo = None
 
@@ -34,24 +37,25 @@ class Repository():
             text = base64.b64decode(metadata_file.content).decode('utf-8')
         except base64.binascii.Error:
             # The input string contains letters that does not belong to the b64 alphabet
-            # TODO: log
+            current_app.logger.error("could not decode b64 encoded file at path " + str(metadata_file))
             return None
         except UnicodeError:
             # Error while decoding the byte stream, not valid UTF-8
-            # TODO: log
+            current_app.logger.error("could not decode UTF-8 encoded content of file at path "
+                          + str(metadata_file))
             return None
         dict = yaml.safe_load(text)
         return Plugin.from_dict(dict) if dict is not None else None
 
     def fetch_plugins_from_github(self):
-        plugins_dirs = self._fetch_plugin_dirs()
-        latest_versions = map(lambda x: self._fetch_latest_version(x), plugins_dirs)
-        return list(filter(lambda x: x is not None,
+        current_app.logger.info("Running fetch plugins from Github")
+        try:
+            plugins_dirs = self._fetch_plugin_dirs()
+            latest_versions = map(lambda x: self._fetch_latest_version(x), plugins_dirs)
+            ret = list(filter(lambda x: x is not None,
                            map(lambda x: self._fetch_metadata(x), latest_versions)))
+        except GithubException:
+            current_app.logger.exception("Unhandled exception in the code dealing with Github API:")
+            return []
 
-
-if __name__ == '__main__':
-     r = Repository()
-     pl = r.fetch_plugins_from_github()
-     for p in pl:
-         print(p.name + " " + p.version)
+        return ret
